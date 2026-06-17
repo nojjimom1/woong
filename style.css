@@ -55,3 +55,18 @@ border-radius:12px;
 box-shadow:0 2px 8px rgba(0,0,0,.1);
 display:none;
 }
+.link-btn{
+display:inline-block;
+margin-top:10px;
+padding:8px 15px;
+background:#0066ff;
+color:white;
+text-decoration:none;
+border-radius:8px;
+font-size:14px;
+font-weight:bold;
+}
+
+.link-btn:hover{
+background:#004ecc;
+}
