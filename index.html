@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MZ 소액 투자 성향 테스트 & 맞춤형 가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-indigo-100">
+
+    <nav class="bg-white shadow-sm border-b border-slate-100 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="location.reload()">
+                <i class="fa-solid fa-chart-pie text-indigo-600 text-2xl"></i>
+                <span class="font-bold text-lg tracking-tight text-slate-900">MZ 스마트 투자 가이드</span>
+            </div>
+            <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded">서비스 제안 Ver 1.0</span>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4 py-12">
+        <div class="max-w-2xl w-full bg-white rounded-3xl shadow-xl border border-slate-100 p-6 md:p-10 transition-all">
+            
+            <div id="start-screen" class="text-center space-y-6 fade-in">
+                <div class="w-20 h-20 bg-gradient-to-tr from-indigo-500 to-purple-600 text-white rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-lg shadow-indigo-100">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="space-y-2">
+                    <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">MZ 투자 성향 자가진단</span>
+                    <h1 class="text-2xl md:text-3xl font-black text-slate-900 leading-snug">나의 금융 지식과 감정선에<br>딱 맞는 소액 투자법은?</h1>
+                </div>
+                <p class="text-slate-500 text-sm md:text-base leading-relaxed max-w-md mx-auto">
+                    복잡한 차트와 어려운 용어는 잠시 잊으세요.<br>4가지 금융위원회 표준 규격 질의를 통해 당신의 투자 수용도와 최적의 핀테크 도구를 매칭해 드립니다.
+                </p>
+                <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                    <span>테스트 시작하기</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div id="quiz-screen" class="hidden space-y-6 fade-in">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs font-bold text-slate-400">
+                        <span id="question-number">Question 1 of 4</span>
+                        <span id="progress-percent">25%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="bg-indigo-600 h-full transition-all duration-300" style="width: 25%"></div>
+                    </div>
+                </div>
+                
+                <h2 class="text-xl md:text-2xl font-bold text-slate-900 leading-snug min-h-[56px]" id="question-text">질문 데이터 로딩 중...</h2>
+                
+                <div class="space-y-3 pt-2" id="answer-options">
+                    </div>
+            </div>
+
+            <div id="result-screen" class="hidden space-y-6 fade-in">
+                <div class="text-center space-y-2">
+                    <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-wider">분석 결과 리포트</span>
+                    <h2 class="text-2xl font-extrabold text-slate-900">당신의 투자 성향 진단 결과</h2>
+                </div>
+
+                <div id="profile-card" class="p-5 rounded-2xl text-center border space-y-1">
+                    <p class="text-xs font-medium text-slate-400">진단된 자산 관리 성격 유형</p>
+                    <h3 id="profile-name" class="text-2xl font-black">위험중립형</h3>
+                    <p id="profile-desc" class="text-sm text-slate-600 max-w-md mx-auto pt-1">성향 설명이 표시됩니다.</p>
+                </div>
+
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/60 space-y-4">
+                    <div class="flex justify-between items-start border-b border-slate-200 pb-3">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase">추천 핀테크 도구</span>
+                            <h4 id="recommend-title" class="text-xl font-bold text-slate-900">Type 투자방식</h4>
+                        </div>
+                        <div id="recommend-icon" class="text-2xl text-indigo-600 bg-white p-2.5 rounded-xl shadow-sm border border-slate-100"></div>
+                    </div>
+
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <span class="font-bold text-slate-900 flex items-center mb-1">
+                                <i class="fa-solid fa-circle-info text-indigo-500 mr-1.5"></i>핵심 특징 및 장점
+                            </span>
+                            <p id="recommend-features" class="text-slate-600 leading-relaxed pl-5"></p>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-xl border border-slate-200/50 space-y-1">
+                            <span class="font-bold text-slate-900 flex items-center text-xs">
+                                <i class="fa-solid fa-building text-sky-500 mr-1.5"></i>대표 플랫폼 (추천 이유)
+                            </span>
+                            <p id="recommend-platform" class="text-indigo-700 font-medium pl-5 text-xs md:text-sm"></p>
+                        </div>
+
+                        <div class="bg-rose-50/60 p-4 rounded-xl border border-rose-100 space-y-1">
+                            <span class="font-bold text-rose-900 flex items-center text-xs">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-500 mr-1.5"></i>단점 및 유의사항
+                            </span>
+                            <p id="recommend-notes" class="text-rose-700 pl-5 text-xs md:text-sm"></p>
+                        </div>
+
+                        <div id="evidence-box" class="pt-2 hidden">
+                            <span class="font-semibold text-slate-400 block text-[11px] mb-1.5 uppercase tracking-wider">학술 데이터 및 신빙성 출처 리포트</span>
+                            <div id="evidence-links" class="flex flex-col space-y-1 text-xs">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-slate-100 p-3 px-4 border-b border-slate-200 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-700"><i class="fa-solid fa-table-list mr-1"></i> 진입장벽 해소: 주요 플랫폼 수수료 비교표</span>
+                        <span class="text-[10px] text-slate-400 font-medium">2026 기획조사 기준</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 border-b border-slate-200 font-medium">
+                                    <th class="p-2.5 pl-4">플랫폼명</th>
+                                    <th class="p-2.5">국내 수수료</th>
+                                    <th class="p-2.5">해외(미국) 수수료</th>
+                                    <th class="p-2.5 pr-4">소수점 매매 특징</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-600">
+                                <tr>
+                                    <td class="p-2.5 pl-4 font-semibold text-slate-900">토스증권</td>
+                                    <td class="p-2.5">0.015%</td>
+                                    <td class="p-2.5">0.1% (이벤트 특가)</td>
+                                    <td class="p-2.5 pr-4 text-indigo-600 font-medium">실시간 주문 및 직관적 UI</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 pl-4 font-semibold text-slate-900">핀트 / 카카오페이</td>
+                                    <td class="p-2.5">0.015%~</td>
+                                    <td class="p-2.5">0.25% 내외</td>
+                                    <td class="p-2.5 pr-4">AI 자동 배분 및 소비 잔돈 연동</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 pl-4 font-semibold text-slate-900">미래에셋 / 삼성</td>
+                                    <td class="p-2.5">0.004%~</td>
+                                    <td class="p-2.5">0.07% ~ 0.25%</td>
+                                    <td class="p-2.5 pr-4 text-emerald-600">ISA/연금계좌 연계 절세 최적화</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex space-x-3">
+                    <button onclick="location.reload()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition text-center text-sm">
+                        <i class="fa-solid fa-rotate-left mr-1.5"></i> 다시 테스트하기
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-xs text-slate-400 border-t border-slate-100 bg-white">
+        © 2026 MZ Smart Invest Solution. 서비스 기획안 프로토타입.
+    </footer>
+
+    <script>
+        // [A] 설문 문항 구성 데이터
+        const quizData = [
+            {
+                text: "Q1. 귀하가 주로 투자하는 금융투자상품에 대한 지식 수준은 어느 정도입니까?",
+                options: [
+                    { text: "매우 낮음 (예금, 적금 위주 자산 운용)", score: 1 },
+                    { text: "낮음 (주식, 채권 등의 구조를 대략 이해하는 수준)", score: 2 },
+                    { text: "높음 (위험도가 높은 파생상품 등의 구조를 명확히 이해)", score: 3 },
+                    { text: "매우 높음 (금융투자 관련 전문지식 및 실무 수준 보유)", score: 4 }
+                ]
+            },
+            {
+                text: "Q2. 과거 5년 이내에 펀드, 주식, 파생상품 등에 투자한 경험과 기간은 얼마나 되나요?",
+                options: [
+                    { text: "투자경험 없음", score: 1 },
+                    { text: "1년 미만의 초기 입문 단계", score: 2 },
+                    { text: "1년 이상 ~ 3년 미만의 중기 투자 경험", score: 3 },
+                    { text: "3년 이상의 장기 투자 및 자산 관리 경험", score: 4 }
+                ]
+            },
+            {
+                text: "Q3. 투자 원금에 손실이 발생할 경우, 귀하의 감내 수준은 어느 정도입니까?",
+                options: [
+                    { text: "원금 보전이 최우선 (원금 손실 절대 불가)", score: 1 },
+                    { text: "약간의 손실 (예: -10% 이내)은 시장 변동성으로 감수 가능", score: 2 },
+                    { text: "일정 부분 (예: -20% 이내)의 손실은 목적 달성을 위해 감수 가능", score: 3 },
+                    { text: "기대 수익을 위해서라면 큰 폭의 원금 손실(-20% 초과)도 수용 가능", score: 4 }
+                ]
+            },
+            {
+                text: "Q4. 만약 귀하의 투자 원금 가치가 6개월 동안 -30% 하락한다면 어떻게 대응하시겠습니까?",
+                options: [
+                    { text: "불안감을 느껴 즉시 전량 매도하여 손실을 확정한다.", score: 1 },
+                    { text: "시장 회복을 믿으며 손실 폭이 줄어들 때까지 보유(존버)한다.", score: 2.5 },
+                    { text: "가격이 크게 하회했으므로 추가 매수(물타기)하여 평단가를 낮춘다.", score: 4 }
+                ]
+            }
+        ];
+
+        // [B] 5대 투자 성향 매핑 테이블
+        const profileData = [
+            { min: 4, max: 6, name: "안정형", style: "border-slate-300 bg-slate-50 text-slate-700", desc: "수익성보다 원금 보존을 최우선으로 하며, 예/적금 등 안전한 자산만 선호하는 보수적 성향입니다.", type: "C" },
+            { min: 7, max: 9, name: "안정추구형", style: "border-sky-300 bg-sky-50 text-sky-800", desc: "원금 손실 위험은 최소화하되, 인플레이션을 방어할 수 있는 은행 금리 이상의 수익을 추구합니다.", type: "C" },
+            { min: 10, max: 12, name: "위험중립형", style: "border-indigo-300 bg-indigo-50 text-indigo-800", desc: "예금보다는 높은 수익을 위해 시장 위험 요소를 인지하고 어느 정도의 손실 위험을 감수할 수 있는 대중적 투자자입니다.", type: "B" },
+            { min: 13, max: 14, name: "적극투자형", style: "border-amber-300 bg-amber-50 text-amber-800", desc: "자산 가치 상승을 위해 비교적 큰 변동 위험을 감수할 수 있으며, 투자 자산 중 주식이나 펀드 비중이 높습니다.", type: "D" },
+            { min: 15, max: 16, name: "공격투자형", style: "border-rose-300 bg-rose-50 text-rose-800", desc: "최대 수익 추구를 목적으로 원금 손실 위험을 적극적으로 수용하며, 레버리지 및 개별 우량주 집중 투자 경향이 강합니다.", type: "A" }
+        ];
+
+        // [C] 4대 투자 방식 상세 기획 데이터
+        const investTypeData = {
+            A: {
+                title: "Type A: 입문형 (소수점 투자)",
+                icon: "<i class='fa-solid fa-coins'></i>",
+                features: "글로벌 우량주(애플, 엔비디아 등)를 1,000원 단위로 매수 가능하여 소액 자본가들의 투자 흥미 유발 및 게이미피케이션에 최적화되어 있습니다.",
+                platform: "토스증권 (미국 주식 실시간 소수점 매매 기능 완벽 지원 및 직관적이고 친근한 사용자 UI 환경 설계)",
+                notes: "일반 온주 거래 시스템 대비 증권사별 실시간 수수료 우대 정책 및 주문 체결 시차 발생 여부를 사전에 검토하는 것이 필수적입니다.",
+                links: [
+                    { label: "토스증권 소수점 매매 뉴스룸", url: "https://corp.tossinvest.com/ko/news-room/detail?id=34415" },
+                    { label: "토스 트렌드 인 넘버 데이터 리포트", url: "https://toss.im/tossfeed/edition/data-report/toss-in-numbers/securities" }
+                ]
+            },
+            B: {
+                title: "Type B: 자동화형 (로보어드바이저)",
+                icon: "<i class='fa-solid fa-robot'></i>",
+                features: "컴퓨터 AI 알고리즘이 가입자의 개별 위험 수용 성향에 맞게 글로벌 자산을 실시간으로 분산 배분하고 시장 왜곡 시 알아서 리밸런싱을 수행합니다.",
+                platform: "핀트(Fint), 카카오페이 (카드 소비 내역과 연동된 '잔돈 자동 저금통 투자' 시스템 탑재로 진입 장벽 완화)",
+                notes: "기본 거래 수수료와 별개로 자산 운용 성과 혹은 일할 계산된 AI 솔루션 플랫폼 전용 운용 수수료가 청구됩니다. 직접 투자 판단 역량을 키우기엔 한계가 존재합니다.",
+                links: [
+                    { label: "자본시장연구원 로보어드바이저 성과 보고서", url: "https://www.kcmi.re.kr/flexer/view?fid=25155&fgu=002002&fty=004003" }
+                ]
+            },
+            C: {
+                title: "Type C: 안정형 (파킹통장 / CMA)",
+                icon: "<i class='fa-solid fa-vault'></i>",
+                features: "자금을 단 하루만 예치하더라도 약정된 고정 금리 이자가 일할 계산되어 매일 지급되는 구조입니다. 자산 가치 하락 우려를 원천 방어합니다.",
+                platform: "한국투자증권 발행어음형 CMA, 네이버페이 연동 CMA (안정적인 고금리 혜택 및 네이버 쇼핑 포인트 연계 리워드 효과 우수)",
+                notes: "원금 유실 걱정은 없으나 시장 금리가 하락 기조일 때 즉각 동조되며, 고물가 경제 체제 하에서 실질적인 구매력 기준 자산 증식 효과는 미미할 수 있습니다.",
+                links: []
+            },
+            // 유저 기획안 오타 반영: 정석식형 -> 정석형 정제
+            D: {
+                title: "Type D: 정석형 (ETF 적립식 투자)",
+                icon: "<i class='fa-solid fa-gem'></i>",
+                features: "단 1주의 소액 거래로도 코스피나 S&P500 등 수백 개 기업의 인덱스 지수에 동시 분산 투자하는 효과를 누리며, 개별 기업 부도 등의 펀더멘탈 리스크를 최소화합니다.",
+                platform: "미래에셋증권, 삼성증권 (정부 비과세 정책 계좌인 개인종합자산관리계좌(ISA) 및 연금저축 계좌 전용 절세 시스템 모바일 최적화 우수)",
+                notes: "시장 전체의 평균 수익률을 정직하게 추종하는 특성상, 단기 급등이나 일명 '대박'을 노리는 투기성 자금 운용에는 적합하지 않으며 긴 호흡의 인내심이 강제됩니다.",
+                links: [
+                    { label: "자본시장연구원 ETF 투자자 행태 분석 리포트", url: "https://www.kcmi.re.kr/flexer/view?fid=26801&fgu=002002&fty=004003" }
+                ]
+            }
+        };
+
+        let currentIdx = 0;
+        let totalScore = 0;
+
+        // [D] 비즈니스 로직 제어 함수
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            currentIdx = 0;
+            totalScore = 0;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const currentQuestion = quizData[currentIdx];
+            
+            // 프로그레스 바 및 텍스트 데이터 UI 업데이트
+            document.getElementById('question-number').innerText = `Question ${currentIdx + 1} of ${quizData.length}`;
+            document.getElementById('question-text').innerText = currentQuestion.text;
+            
+            const progressRatio = ((currentIdx + 1) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressRatio}%`;
+            document.getElementById('progress-percent').innerText = `${Math.round(progressRatio)}%`;
+
+            // 선택지 버튼 컴포넌트 렌더링
+            const optionsContainer = document.getElementById('answer-options');
+            optionsContainer.innerHTML = '';
+
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = "w-full text-left bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 border border-slate-200/80 p-4 rounded-xl transition font-medium text-slate-700 text-sm md:text-base flex items-center shadow-sm";
+                button.innerText = option.text;
+                button.onclick = () => handleAnswerClick(option.score);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function handleAnswerClick(score) {
+            totalScore += score;
+            currentIdx++;
+
+            if (currentIdx < quizData.length) {
+                renderQuestion();
+            } else {
+                evaluateAndShowResult();
+            }
+        }
+
+        function evaluateAndShowResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // 1. 점수 스코어 구간 검증 및 유저 프로필 탐색
+            const matchedProfile = profileData.find(p => totalScore >= p.min && totalScore <= p.max) || profileData[2];
+
+            // 2. 프로필 카드 UI 주입
+            const profileCard = document.getElementById('profile-card');
+            profileCard.className = `p-5 rounded-2xl text-center border space-y-1 ${matchedProfile.style}`;
+            document.getElementById('profile-name').innerText = `${matchedProfile.name} (합산 점수: ${totalScore}점)`;
+            document.getElementById('profile-desc').innerText = matchedProfile.desc;
+
+            // 3. 투자 방식 추천 바인딩
+            const recommendedTypeKey = matchedProfile.type;
+            const investDetail = investTypeData[recommendedTypeKey];
+
+            document.getElementById('recommend-title').innerText = investDetail.title;
+            document.getElementById('recommend-icon').innerHTML = investDetail.icon;
+            document.getElementById('recommend-features').innerText = investDetail.features;
+            document.getElementById('recommend-platform').innerText = investDetail.platform;
+            document.getElementById('recommend-notes').innerText = investDetail.notes;
+
+            // 4. 리서치 검증 학술 증거 링크 동적 활성화
+            const evidenceBox = document.getElementById('evidence-box');
+            const evidenceLinksContainer = document.getElementById('evidence-links');
+            evidenceLinksContainer.innerHTML = '';
+
+            if (investDetail.links && investDetail.links.length > 0) {
+                evidenceBox.classList.remove('hidden');
+                investDetail.links.forEach(link => {
+                    const aTag = document.createElement('a');
+                    aTag.href = link.url;
+                    aTag.target = "_blank";
+                    aTag.className = "text-indigo-600 hover:text-indigo-800 underline flex items-center space-x-1 py-0.5";
+                    aTag.innerHTML = `<i class="fa-solid fa-link text-[10px] text-slate-400 mr-1"></i><span>${link.label} [바로가기]</span>`;
+                    evidenceLinksContainer.appendChild(aTag);
+                });
+            } else {
+                evidenceBox.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
